@@ -1,8 +1,9 @@
 /* ─────────────────────────────────────────────────────────────
    Menù per i preventivi — Beauty Garden Banqueting
+   Fogli A4 stampati in serie (stampante d'ufficio a colori,
+   fronte-retro) e compilati a penna durante il preventivo.
    Colori: campioni del Manuale del marchio.
-   Font: Velista (titoli, solo maiuscolo) + Fraunces (testo),
-   gli stessi dei menù da tavola.
+   Font: Velista (titoli, solo maiuscolo) + Fraunces (testo).
    ───────────────────────────────────────────────────────────── */
 
 @font-face { font-family: "Velista"; src: url("font/privati/VELISTA.ttf"); }
@@ -11,13 +12,26 @@
 @font-face { font-family: "Fraunces"; src: url("font/Fraunces-Testo-Italic-400.ttf"); font-weight: 400; font-style: italic; }
 
 :root {
-  --verde: #2B392A;
-  --oro: #C79A4E;
-  --nero: #201F1B;
-  --tenue: #6B675E;
-  --riga-penna: rgba(43, 57, 42, 0.30);
-  --riga: 7.5mm;            /* interlinea per la scrittura a mano */
-  --col-note: 54mm;         /* colonna delle modifiche a penna */
+  /* Colori: solo tinte piene, niente trasparenze (le stampanti
+     d'ufficio le rendono a puntini). */
+  --verde: #2B392A;          /* titoli, piatti */
+  --oro: #C79A4E;            /* logo e caselle da spuntare */
+  --nero: #201F1B;           /* testo */
+  --tenue: #66625A;          /* descrizioni, etichette (contrasto 6:1) */
+  --riga-penna: #A9A69F;     /* righe per scrivere: chiare ma visibili in stampa */
+  --riga-campo: #77746C;     /* sottolineatura dei campi da compilare */
+
+  /* Scala tipografica: sei ruoli */
+  --t-display: 36pt;         /* nome del menù, prezzo */
+  --t-sezione: 14pt;         /* titoli delle portate e dei blocchi */
+  --t-piatto: 11pt;          /* piatti, voci principali */
+  --t-testo: 9.5pt;          /* testo, nomi delle isole */
+  --t-nota: 8pt;             /* descrizioni, etichette, condizioni */
+  --t-piede: 7pt;            /* piè di pagina */
+
+  /* Spazi (base 1mm) e griglia */
+  --riga: 7.5mm;             /* interlinea per la scrittura a mano */
+  --col-note: 54mm;          /* colonna delle modifiche a penna */
   --spazio-col: 8mm;
   --titoli: "Velista", "Fraunces", Georgia, serif;
   --testo: "Fraunces", Georgia, serif;
@@ -28,138 +42,121 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body {
-  font-family: var(--testo); font-size: 9.2pt; line-height: 1.42;
+  font-family: var(--testo); font-size: var(--t-testo); line-height: 1.42;
   color: var(--nero); background: #fff;
   font-variant-numeric: lining-nums;
 }
+ul { list-style: none; }
 
-/* Griglia comune: contenuto a sinistra, note a destra */
 .riga-griglia {
   display: grid;
   grid-template-columns: 1fr var(--col-note);
   column-gap: var(--spazio-col);
 }
 
+h2 {
+  font-family: var(--titoli); font-weight: normal; font-size: var(--t-sezione); line-height: 1.1;
+  letter-spacing: 0.04em; color: var(--verde); margin-bottom: 2.4mm;
+}
+
 /* ─── Testata (prima pagina) ────────────────────────────────── */
-.testata { margin-bottom: 7mm; }
-.titolo-prezzo { display: flex; justify-content: space-between; align-items: flex-end; column-gap: 8mm; }
+.testata { margin-bottom: 8mm; }
 .testata .logo { width: 56mm; display: block; margin-bottom: 9mm; }
+.titolo-prezzo { display: flex; justify-content: space-between; align-items: flex-end; column-gap: 8mm; }
 h1 {
-  font-family: var(--titoli); font-weight: normal; font-size: 38pt; line-height: 0.95;
+  font-family: var(--titoli); font-weight: normal; font-size: var(--t-display); line-height: 0.95;
   color: var(--verde); letter-spacing: 0.01em;
 }
-.sottotitolo { font-style: italic; font-size: 10pt; color: var(--tenue); margin-top: 2.2mm; }
-.intro { font-size: 9.2pt; color: var(--tenue); margin-top: 3mm; max-width: 118mm; }
-
-.prezzo { text-align: right; flex: none; padding-bottom: 0.4mm; }
-.prezzo .cifra { font-family: var(--titoli); font-size: 34pt; line-height: 0.9; color: var(--verde); display: block; }
-.prezzo .unita { font-style: italic; font-size: 9pt; color: var(--tenue); }
+.prezzo { text-align: right; flex: none; }
+.prezzo .cifra { font-family: var(--titoli); font-size: var(--t-display); line-height: 0.9; color: var(--verde); display: block; }
+.prezzo .unita, .sottotitolo { font-style: italic; font-size: var(--t-nota); color: var(--tenue); }
+.sottotitolo { margin-top: 2.4mm; }
+.intro { color: var(--tenue); margin-top: 3mm; max-width: 118mm; }
 
 /* Testata ridotta delle pagine successive */
 .testata-pagina {
   break-before: page;
   display: flex; justify-content: space-between; align-items: baseline;
-  padding-bottom: 2.4mm; margin-bottom: 6mm;
-  border-bottom: 0.6pt solid var(--verde);
+  padding-bottom: 2.4mm; margin-bottom: 7mm;
+  border-bottom: 0.75pt solid var(--verde);
 }
-.testata-pagina .nome { font-family: var(--titoli); font-size: 13pt; color: var(--verde); }
-.testata-pagina .dettaglio { font-style: italic; font-size: 9pt; color: var(--tenue); }
+.testata-pagina .nome { font-family: var(--titoli); font-size: var(--t-sezione); color: var(--verde); }
+.testata-pagina .dettaglio { font-style: italic; font-size: var(--t-nota); color: var(--tenue); }
 
-/* ─── Portate con colonna note ──────────────────────────────── */
-.portata .contenuto { padding: 0 0 6.5mm; }
+/* ─── Portate con colonna per le modifiche ──────────────────── */
 .portata { break-inside: avoid; }
-.portata .note {
-  min-height: calc(var(--riga) * 3 + 2mm);
-  margin-bottom: 3mm;
-  position: relative;
-}
-/* Righe vere (bordi vettoriali): stampano nitide e a passo regolare.
-   Sono posizionate in assoluto, quindi non allungano la portata. */
+.portata .contenuto { padding-bottom: 7mm; }
+.portata .note { min-height: calc(var(--riga) * 3 + 2mm); margin-bottom: 3mm; position: relative; }
+/* Righe vere (bordi vettoriali) a passo regolare; in assoluto,
+   quindi non allungano la portata. */
 .portata .note .righe { position: absolute; top: 2mm; left: 0; right: 0; bottom: 0; overflow: hidden; }
-.portata .note .righe i { display: block; height: var(--riga); border-bottom: 0.5pt solid var(--riga-penna); }
+.righe i, .righe-libere i { display: block; height: var(--riga); border-bottom: 0.6pt solid var(--riga-penna); }
 .portata.prima .note::before {
   content: "Modifiche"; position: absolute; top: -1mm; left: 0; z-index: 1;
-  font-style: italic; font-size: 8pt; color: var(--tenue); background: #fff; padding-right: 1.5mm;
+  font-style: italic; font-size: var(--t-nota); color: var(--tenue); background: #fff; padding-right: 1.5mm;
 }
 
-h2 {
-  font-family: var(--titoli); font-weight: normal; font-size: 14pt; line-height: 1.1;
-  letter-spacing: 0.04em; color: var(--verde); margin-bottom: 2.2mm;
-}
-.nota-portata { font-style: italic; color: var(--tenue); margin: -0.6mm 0 2.6mm; }
+.nota-portata { font-style: italic; font-size: var(--t-nota); color: var(--tenue); margin: -0.8mm 0 2.8mm; max-width: 110mm; }
 
-/* Voci semplici, una per riga */
-.layout-semplice li { list-style: none; font-size: 10.2pt; }
-.layout-semplice li + li { margin-top: 0.6mm; }
+.layout-semplice li { font-size: var(--t-piatto); line-height: 1.35; }
 
-/* Isole del buffet: nome + descrizione */
 .layout-isole .voci { columns: 2; column-gap: 6mm; }
-.isola { break-inside: avoid; margin-bottom: 2.4mm; }
-.isola h3 { font-weight: 560; font-size: 9.8pt; line-height: 1.2; color: var(--verde); }
-.isola p { font-size: 8.4pt; line-height: 1.36; color: var(--tenue); margin-top: 0.3mm; }
-.layout-isole.colonne-1 .voci { columns: 1; }
+.isola { break-inside: avoid; margin-bottom: 2.6mm; }
+.isola h3 { font-weight: 560; font-size: var(--t-testo); line-height: 1.25; color: var(--verde); }
+.isola p { font-size: var(--t-nota); line-height: 1.38; color: var(--tenue); margin-top: 0.3mm; }
 
-/* Piatti serviti */
-.piatto { font-size: 11.4pt; line-height: 1.3; color: var(--verde); }
+.piatto { font-size: var(--t-piatto); line-height: 1.32; color: var(--verde); }
 .piatto + .piatto { margin-top: 1.4mm; }
-.contorno { font-style: italic; font-size: 9.6pt; color: var(--tenue); margin-top: 1.8mm; }
-.nota-sostituzioni { font-style: italic; font-size: 8.2pt; color: var(--tenue); margin-top: 2.4mm; }
+.contorno { font-style: italic; color: var(--tenue); margin-top: 1.8mm; }
+.nota-sostituzioni { font-style: italic; font-size: var(--t-nota); color: var(--tenue); margin-top: 2.4mm; }
 
-/* Elenco (dolci) */
-.evidenza { font-size: 10.2pt; color: var(--verde); margin-bottom: 2.6mm; max-width: 112mm; }
-.layout-elenco ul { list-style: none; columns: 2; column-gap: 6mm; }
-.layout-elenco li {
-  break-inside: avoid; font-size: 9pt; line-height: 1.38;
-  padding-left: 3mm; text-indent: -3mm; margin-bottom: 1.2mm;
+.evidenza { font-size: var(--t-piatto); line-height: 1.35; color: var(--verde); margin-bottom: 2.8mm; max-width: 112mm; }
+.layout-elenco ul { columns: 2; column-gap: 6mm; }
+.layout-elenco li { break-inside: avoid; padding-left: 3mm; text-indent: -3mm; margin-bottom: 1.2mm; line-height: 1.36; }
+
+/* ─── Pagine di riepilogo ───────────────────────────────────── */
+.blocco { margin-bottom: 7mm; break-inside: avoid; }
+.elenco-due-colonne { columns: 2; column-gap: 10mm; }
+.elenco-due-colonne li, .condizioni li { break-inside: avoid; padding-left: 3mm; text-indent: -3mm; margin-bottom: 1.2mm; }
+.condizioni { display: grid; grid-template-columns: 1fr 1fr; column-gap: 10mm; align-items: start; }
+.condizioni .validita p + p { margin-top: 1.2mm; }
+
+/* Tabelle a righe: supplementi da spuntare ed extra da scrivere */
+.tabella { width: 100%; border-collapse: collapse; }
+.tabella th {
+  text-align: left; font-weight: normal; font-style: italic; font-size: var(--t-nota); color: var(--tenue);
+  padding-bottom: 1mm;
 }
-
-/* ─── Pagina di riepilogo ───────────────────────────────────── */
-.riepilogo { break-before: page; }
-.riepilogo h2 { margin-bottom: 3mm; }
-.blocco { margin-bottom: 5.5mm; break-inside: avoid; }
-.riepilogo { font-size: 8.8pt; }
-
-.incluso ul { list-style: none; columns: 2; column-gap: 10mm; }
-.incluso li { break-inside: avoid; padding-left: 3mm; text-indent: -3mm; margin-bottom: 1.1mm; }
-
-.condizioni { display: grid; grid-template-columns: 1fr 1fr; column-gap: 10mm; }
-.condizioni ul { list-style: none; }
-.condizioni li { padding-left: 3mm; text-indent: -3mm; margin-bottom: 1.1mm; }
-.condizioni .orari p + p { margin-top: 1.1mm; }
-.condizioni .orari em { color: var(--tenue); }
-
-/* Supplementi da spuntare */
-.supplementi { width: 100%; border-collapse: collapse; }
-.supplementi td { padding: 1.7mm 0; vertical-align: middle; border-bottom: 0.4pt solid rgba(32, 31, 27, 0.18); }
-.supplementi td.spunta { width: 7mm; }
-.supplementi td.importo { text-align: right; white-space: nowrap; color: var(--verde); padding-left: 4mm; }
-.casella { display: inline-block; width: 3.4mm; height: 3.4mm; border: 0.7pt solid var(--oro); vertical-align: middle; }
+.tabella td { height: var(--riga); vertical-align: bottom; padding-bottom: 1.2mm; border-bottom: 0.6pt solid var(--riga-penna); }
+.tabella .spunta { width: 7mm; }
+.tabella .importo { width: 34mm; text-align: right; white-space: nowrap; color: var(--verde); }
+.tabella th.importo { color: var(--tenue); }
+.tabella.extra td.importo { border-left: 0.6pt solid var(--riga-penna); }
+.tabella.supplementi td { height: auto; padding: 2mm 0; vertical-align: top; }
+.tabella.supplementi .casella { vertical-align: -0.4mm; }
+.casella { display: inline-block; width: 3.6mm; height: 3.6mm; border: 1pt solid var(--oro); vertical-align: -0.6mm; }
 
 /* Campi da compilare a penna */
-.campi { display: grid; grid-template-columns: repeat(6, 1fr); column-gap: 7mm; row-gap: 3.2mm; }
+.campi { display: grid; grid-template-columns: repeat(6, 1fr); column-gap: 7mm; row-gap: 3.6mm; }
 .campo { grid-column: span 2; }
 .campo.largo { grid-column: span 4; }
 .campo.intero { grid-column: 1 / -1; }
-.campo .etichetta { display: block; font-style: italic; font-size: 8.4pt; color: var(--tenue); }
+.campo .etichetta { display: block; font-style: italic; font-size: var(--t-nota); color: var(--tenue); }
 .campo .valore {
-  display: block; height: 8mm; padding-top: 2.4mm;
-  border-bottom: 0.6pt solid rgba(32, 31, 27, 0.5);
-  font-size: 11pt; color: var(--verde); line-height: 1.2;
+  display: block; height: 8.5mm; padding-top: 2.6mm;
+  border-bottom: 0.75pt solid var(--riga-campo);
+  font-size: var(--t-piatto); color: var(--verde); line-height: 1.2;
 }
 .campo .valore.stampato { border-bottom-color: transparent; }
-.righe-libere { position: relative; }
-.righe-libere i { display: block; height: var(--riga); border-bottom: 0.6pt solid rgba(32, 31, 27, 0.5); }
-.righe-libere .testo-nota { position: absolute; top: 0.8mm; left: 0; right: 0; font-size: 11pt; color: var(--verde); line-height: var(--riga); }
-.firma { margin-top: 4mm; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: 7mm; }
-.firma .campo { grid-column: 4 / -1; }
+.campo.forte .etichetta { color: var(--verde); font-style: normal; font-weight: 560; }
+.campo.forte .valore { border-bottom-width: 1.2pt; border-bottom-color: var(--verde); }
 
-/* ─── Varianti per i banchetti ──────────────────────────────── */
+/* ─── Varianti per i banchetti (riepilogo su una sola facciata) ─ */
 .linea-banchetti .testata { margin-bottom: 5mm; }
-.linea-banchetti .testata .logo { width: 44mm; margin-bottom: 6mm; }
-.linea-banchetti h1 { font-size: 29pt; }
-.linea-banchetti .prezzo .cifra { font-size: 29pt; }
-.linea-banchetti .intro { margin-top: 2.4mm; }
-.linea-banchetti h2 { font-size: 13pt; margin-bottom: 1.8mm; }
-.linea-banchetti .isola { margin-bottom: 1.6mm; }
-.linea-banchetti .portata .contenuto { padding-bottom: 3.8mm; }
+.linea-banchetti .testata .logo { width: 46mm; margin-bottom: 5.5mm; }
+.linea-banchetti h1, .linea-banchetti .prezzo .cifra { font-size: 28pt; }
+.linea-banchetti .portata .contenuto { padding-bottom: 3.6mm; }
 .linea-banchetti .portata .note { margin-bottom: 2mm; min-height: calc(var(--riga) * 2 + 2mm); }
+.linea-banchetti .blocco { margin-bottom: 5mm; }
+.linea-banchetti .campi { row-gap: 2.8mm; }
+.linea-banchetti .testata-pagina { margin-bottom: 5mm; }

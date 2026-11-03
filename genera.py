@@ -6,18 +6,13 @@ Uso:
   python genera.py                          -> tutti i menù in pdf/
   python genera.py matrimonio-carne-special -> solo quel menù
 
-Preventivo precompilato (finisce in preventivi/):
-  python genera.py matrimonio-carne-special --cliente "Anna e Marco" \
-      --data-evento 12/06/2027 --adulti 120 --bambini 8 --sala "Sala Luxury" --note "..."
+I PDF si stampano in serie (A4, fronte-retro) e il preventivo si compila a penna.
 
 Requisiti: Python 3 con i pacchetti pyyaml e jinja2 (pip install pyyaml jinja2)
 e Google Chrome o Chromium installato.
 """
 import argparse
-import calendar
-import datetime as dt
 import os
-import platform
 import re
 import shutil
 import subprocess
@@ -32,11 +27,16 @@ RADICE = Path(__file__).resolve().parent
 LISTINO = RADICE / "listino"
 MODELLO = RADICE / "modello"
 USCITA_MENU = RADICE / "pdf"
-USCITA_PREVENTIVI = RADICE / "preventivi"
 
 ETICHETTE_LINEA = {"matrimonio": "Matrimonio", "banchetti": "Banchetti"}
-PAGINE_MASSIME = {"matrimonio": 3, "banchetti": 2}
-RIGHE_LIBERE = {"matrimonio": 4, "banchetti": 6}   # righe per "Altre modifiche e richieste"
+# Facciate previste: sempre pari, perché si stampa fronte-retro.
+PAGINE_PREVISTE = {"matrimonio": 4, "banchetti": 2}
+# Pagine di riepilogo: il matrimonio ha condizioni/extra e preventivo su due
+# facciate separate, i banchetti tutto su una.
+RIEPILOGO = {
+    "matrimonio": {"pagina_separata": True, "righe_extra": 12, "righe_note": 9},
+    "banchetti": {"pagina_separata": False, "righe_extra": 4, "righe_note": 3},
+}
 LAYOUT_VALIDI = {"semplice", "isole", "piatti", "elenco"}
 VELISTA = MODELLO / "font" / "privati" / "VELISTA.ttf"
 
@@ -102,31 +102,6 @@ def controlla_menu(slug: str, menu: dict) -> list[str]:
     return [f"{slug}: {e}" for e in errori]
 
 
-def aggiungi_mesi(data: dt.date, mesi: int) -> dt.date:
-    m = data.month - 1 + mesi
-    anno, mese = data.year + m // 12, m % 12 + 1
-    giorno = min(data.day, calendar.monthrange(anno, mese)[1])
-    return dt.date(anno, mese, giorno)
-
-
-def dati_preventivo(args, comune: dict) -> dict:
-    vuoto = {k: "" for k in ("cliente", "data_evento", "adulti", "bambini", "sala", "data_preventivo", "scadenza", "note")}
-    if not args.cliente:
-        return vuoto
-    oggi = dt.date.today()
-    mesi = int(re.match(r"\d+", comune["validita_preventivo"]).group())
-    return {
-        "cliente": args.cliente,
-        "data_evento": args.data_evento or "",
-        "adulti": "" if args.adulti is None else args.adulti,
-        "bambini": "" if args.bambini is None else args.bambini,
-        "sala": args.sala or "",
-        "data_preventivo": oggi.strftime("%d/%m/%Y"),
-        "scadenza": aggiungi_mesi(oggi, mesi).strftime("%d/%m/%Y"),
-        "note": args.note or "",
-    }
-
-
 def conta_pagine(pdf: Path) -> int:
     return len(re.findall(rb"/Type\s*/Page[^s]", pdf.read_bytes()))
 
@@ -151,12 +126,6 @@ def stampa_pdf(chrome: str, html: str, destinazione: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Genera i PDF dei menù Beauty Garden.")
     parser.add_argument("menu", nargs="*", help="nome del file in listino/menu senza .yaml (vuoto = tutti)")
-    parser.add_argument("--cliente", help="nome degli sposi o dell'intestatario")
-    parser.add_argument("--data-evento")
-    parser.add_argument("--adulti", type=int)
-    parser.add_argument("--bambini", type=int)
-    parser.add_argument("--sala")
-    parser.add_argument("--note")
     parser.add_argument("--html", action="store_true", help="salva anche l'HTML accanto al PDF (per controlli)")
     args = parser.parse_args()
 
@@ -168,8 +137,6 @@ def main() -> None:
         mancanti = richiesti - {f.stem for f in file_menu}
         if mancanti:
             sys.exit(f"Menù non trovati: {', '.join(sorted(mancanti))}")
-    if args.cliente and len(file_menu) != 1:
-        sys.exit("Per un preventivo precompilato indica un solo menù.")
 
     menus = {f.stem: leggi_yaml(f) for f in file_menu}
     errori = [e for slug, m in menus.items() for e in controlla_menu(slug, m)]
@@ -186,7 +153,6 @@ def main() -> None:
     modello = env.get_template("menu.html.j2")
     prepara_velista()
     chrome = trova_chrome()
-    preventivo = dati_preventivo(args, comune)
 
     for slug, menu in menus.items():
         linea = menu["linea"]
@@ -202,24 +168,18 @@ def main() -> None:
             condizioni=(comune.get(f"condizioni_{linea}") or []) + (menu.get("condizioni_extra") or []),
             supplementi=comune.get(f"supplementi_{linea}") or [],
             email_piede=c["email"] if linea == "matrimonio" else f"{c['email_info']}\\2003 {c['email']}",
-            righe_libere=RIGHE_LIBERE[linea],
-            p=preventivo,
+            r=RIEPILOGO[linea],
         )
-        nome_file = f"{ETICHETTE_LINEA[linea]} - {menu['nome']}.pdf"
-        if args.cliente:
-            data = dt.date.today().strftime("%Y-%m-%d")
-            nome_file = f"Preventivo {data} - {args.cliente} - {menu['nome']}.pdf"
-            destinazione = USCITA_PREVENTIVI / nome_file
-        else:
-            destinazione = USCITA_MENU / nome_file
+        destinazione = USCITA_MENU / f"{ETICHETTE_LINEA[linea]} - {menu['nome']}.pdf"
         stampa_pdf(chrome, html, destinazione)
         if args.html:
             destinazione.with_suffix(".html").write_text(html, encoding="utf-8")
         pagine = conta_pagine(destinazione)
         avviso = ""
-        if pagine > PAGINE_MASSIME[linea]:
-            avviso = f"  ⚠ {pagine} pagine (previste {PAGINE_MASSIME[linea]}): accorcia i testi"
-        print(f"✓ {destinazione.relative_to(RADICE)}  ({pagine} pag.){avviso}")
+        if pagine != PAGINE_PREVISTE[linea]:
+            avviso = (f"  ⚠ {pagine} facciate invece di {PAGINE_PREVISTE[linea]}: "
+                      "in fronte-retro resterebbero facciate vuote o fogli in più; accorcia o allunga i testi")
+        print(f"✓ {destinazione.relative_to(RADICE)}  ({pagine} facciate){avviso}")
 
 
 if __name__ == "__main__":

@@ -2,7 +2,8 @@
 
 Menù per i preventivi, rifatti da capo in stile minimal secondo il Manuale del marchio,
 con gli stessi font dei menù da tavola (Velista e Fraunces).
-Sono pensati per essere **stampati e compilati a penna durante il preventivo**.
+Sono pensati per essere **stampati in serie (A4 fronte-retro, stampante d'ufficio a colori)
+e compilati a penna durante il preventivo**.
 
 Il contenuto (piatti, prezzi, condizioni) è separato dalla grafica: si modifica il testo
 e i PDF si rigenerano tutti con la stessa impaginazione.
@@ -13,14 +14,28 @@ e i PDF si rigenerano tutti con la stessa impaginazione.
 
 ## Come è fatto un menù
 
-- **Pagine del menù**: a sinistra le portate, a destra una **colonna di righe per le modifiche
-  a penna**, allineata a ogni portata. Le portate che si cambiano più spesso (primi e
-  secondi) hanno più righe.
-- **Ultima pagina, riepilogo del preventivo**: cosa è incluso, condizioni, supplementi con
-  casella da spuntare, e i campi da compilare: sposi o intestatario, data dell'evento,
-  adulti, bambini, sala, prezzo del menù (già stampato), supplementi a persona, prezzo
-  concordato a persona, totale, data e scadenza del preventivo, altre modifiche, firma.
-- Matrimonio: 3 pagine. Banchetti: 2 pagine.
+| | Matrimonio (2 fogli A4 fronte-retro, pinzati) | Banchetti (1 foglio A4 fronte-retro) |
+|---|---|---|
+| Facciata 1 | Nome, prezzo, benvenuto, antipasti | Tutto il menù |
+| Facciata 2 | Primi, secondi, dolci, bar | Condizioni, extra e preventivo |
+| Facciata 3 | Incluso, condizioni e supplementi, extra e aggiunte | |
+| Facciata 4 | Preventivo da compilare | |
+
+Spazi per la penna, uno per ogni cosa che si annota durante il preventivo:
+
+- **Cambi di piatti**: colonna di righe "Modifiche" accanto a ogni portata (più righe per primi e secondi).
+- **Aggiunte ed extra**: tabella a righe con colonna del prezzo.
+- **Prezzi e sconti**: prezzo del menù (stampato), supplementi, extra, sconto, prezzo concordato a persona, totale. I supplementi sala si spuntano.
+- **Dati e logistica**: sposi o intestatario, telefono, email, data, pranzo o cena, adulti, bambini, sala, intolleranze e allergie, note.
+
+Lo script avvisa se un menù non ha il numero esatto di facciate (4 o 2): in fronte-retro
+una facciata in più o in meno significa un foglio sprecato o una pagina bianca.
+
+### Stampa
+
+- Formato A4, **scala 100% / dimensioni effettive** (non "adatta alla pagina"), fronte-retro sul lato lungo.
+- Carta non patinata (usomano) da almeno 90–100 g: la penna scrive meglio e non trapassa.
+- Le righe per scrivere sono grigie piene, non trasparenti, così escono nitide anche dalle stampanti d'ufficio.
 
 ## Cosa c'è
 
@@ -80,17 +95,17 @@ python genera.py
 ```
 
 Lo script controlla gli errori più comuni (prezzo non numerico, sezioni vuote, nomi
-duplicati) e avvisa se un menù supera le pagine previste.
+duplicati) e il numero di facciate. Il numero di righe di extra e note nelle pagine di
+riepilogo si regola in `genera.py` (`RIEPILOGO`).
 
-### Preventivo precompilato
+## Scelte grafiche
 
-```bash
-python genera.py matrimonio-carne-special --cliente "Nome e Cognome" --data-evento 12/06/2027 --adulti 120 --bambini 8 --sala "Sala Luxury" --note "..."
-```
+Riviste con le skill `impeccable` (critica, tipografia, impaginazione, rifinitura) e
+`minimalist-ui`:
 
-Il PDF finisce in `preventivi/`, con data del preventivo e scadenza calcolate in automatico.
-Prezzo concordato, supplementi e totale restano da scrivere a penna.
-La cartella `preventivi/` **non viene pubblicata su GitHub** perché contiene dati dei clienti.
+- sei ruoli tipografici fissi (36 / 14 / 11 / 9,5 / 8 / 7 pt) invece di dimensioni sparse;
+- testo allineato a sinistra, niente etichette maiuscole spaziate, niente separatori decorativi;
+- colore usato con parsimonia: verde per titoli e piatti, oro solo per logo e caselle.
 
 ## Font
 
