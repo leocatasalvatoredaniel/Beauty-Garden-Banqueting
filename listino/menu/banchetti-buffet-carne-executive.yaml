@@ -1,0 +1,64 @@
+# Fonte: "MENU' BANCHETTI 2026.pdf", pagina 5 (prezzo stampato € 93)
+linea: banchetti
+nome: "Buffet Carne Executive"
+prezzo: 93
+
+sezioni:
+  - titolo: "Benvenuto"
+    layout: linea
+    voci:
+      - "Cocktail di benvenuto"
+      - "Aperitivi e rusticherie"
+      - "Finger food e show cooking"
+
+  - titolo: "Buffet di antipasti"
+    layout: isole
+    colonne: 3
+    voci:
+      - nome: "Angolo del Salumiere"
+        desc: "I migliori prosciutti cotti e crudi e salumi stagionati, tagliati a mano"
+      - nome: "Filetto di cinghiale"
+        desc: "Aromatizzato al pepe rosa"
+      - nome: "Carpacci di carne"
+      - nome: "Isola dei formaggi"
+        desc: "Formaggi dell'Etna e dei Nebrodi"
+      - nome: "Fritturine e rusticherie in pastella"
+      - nome: "Quadrucci di parmigiana"
+      - nome: "Piadine farcite dal vivo"
+      - nome: "Tapas spagnole"
+      - nome: "Tipicherie di stagione"
+      - nome: "Selezione di finger food"
+      - nome: "Isola delle conserve"
+      - nome: "Isola del pane"
+
+  - titolo: "Primi piatti"
+    nota: "Serviti al tavolo"
+    layout: piatti
+    voci:
+      - "Risotto con speck, asparagi e scaglie di Ragusano"
+      - "Strozzapreti di grano duro al pistacchio e bacon croccante"
+
+  - titolo: "Secondo piatto"
+    layout: piatti
+    voci:
+      - "Delicato arrosto di vitellino ai funghi porcini"
+    contorno: "Tortino di spinaci"
+
+  - titolo: "Buffet di dolci"
+    layout: elenco
+    colonne: 3
+    evidenza: "La torta da personalizzare"
+    voci:
+      - "Crêpes alla Nutella Ferrero dal vivo"
+      - "Babà dal vivo"
+      - "Gelato artigianale"
+      - "Tagliata di frutta"
+      - "Pasticceria mignon classica e moderna"
+      - "Zucchero filato"
+
+  - titolo: "Bevande"
+    layout: linea
+    voci:
+      - "Spumante"
+      - "Acqua minerale e bevande"
+      - "Caffè e amari"

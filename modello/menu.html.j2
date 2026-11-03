@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<base href="{{ base }}">
+<title>{{ etichetta_linea }} · {{ menu.nome }}</title>
+<link rel="stylesheet" href="stile.css">
+<style>
+  @page {
+    @bottom-left {
+      content: "Beauty Garden Banqueting  ·  {{ c.luogo }}  ·  Tel. {{ c.telefono }}  ·  {{ c.sito }}  ·  {{ email_piede }}";
+      font-family: "Jost", sans-serif; font-size: 6.6pt; letter-spacing: 0.04em; color: #66625A;
+    }
+    @bottom-right {
+      content: counter(page) " / " counter(pages);
+      font-family: "Jost", sans-serif; font-size: 6.6pt; letter-spacing: 0.04em; color: #66625A;
+    }
+  }
+</style>
+</head>
+<body class="linea-{{ menu.linea }}">
+
+<header class="testata">
+  <img class="logo" src="logo/beauty-garden-oro.svg" alt="Beauty Garden Banqueting">
+  <p class="kicker">Menù {{ etichetta_linea }} · {{ comune.listino }}</p>
+  <h1>{{ menu.nome }}</h1>
+  <p class="prezzo"><span class="euro">€ {{ menu.prezzo }}</span>a persona</p>
+  {% if intro %}<p class="intro">{{ intro }}</p>{% endif %}
+</header>
+
+{% for s in menu.sezioni %}
+{% if s.pagina_nuova %}
+<div class="testata-mini">
+  <img class="logo" src="logo/beauty-garden-oro.svg" alt="">
+  <p class="titolo"><span>Menù {{ etichetta_linea }}</span>{{ menu.nome }}</p>
+</div>
+{% endif %}
+<section class="sezione layout-{{ s.layout }} colonne-{{ s.colonne or 2 }}">
+  <h2>{{ s.titolo }}</h2>
+  {% if s.nota %}<p class="nota-sezione">{{ s.nota }}</p>{% endif %}
+
+  {% if s.layout == "linea" %}
+    <p class="voci">{% for v in s.voci %}{{ v }}{% if not loop.last %}<span class="sep">·</span>{% endif %}{% endfor %}</p>
+
+  {% elif s.layout == "isole" %}
+    <div class="voci">
+    {% for v in s.voci %}
+      <div class="isola"><h3>{{ v.nome }}</h3>{% if v.desc %}<p>{{ v.desc }}</p>{% endif %}</div>
+    {% endfor %}
+    </div>
+
+  {% elif s.layout == "piatti" %}
+    {% for v in s.voci %}<p class="piatto">{{ v }}</p>{% endfor %}
+    {% if s.contorno %}<p class="contorno">{{ s.contorno }}</p>{% endif %}
+    {% if s.nota_sostituzioni %}<p class="nota-sostituzioni">{{ comune.nota_sostituzioni }}</p>{% endif %}
+
+  {% elif s.layout == "elenco" %}
+    {% if s.evidenza %}<p class="evidenza">{{ s.evidenza }}</p>{% endif %}
+    <ul>{% for v in s.voci %}<li>{{ v }}</li>{% endfor %}</ul>
+  {% endif %}
+</section>
+{% endfor %}
+
+{% if incluso %}
+<section class="incluso">
+  <h2>Formula tutto incluso</h2>
+  <ul>{% for v in incluso %}<li>{{ v }}</li>{% endfor %}</ul>
+</section>
+{% endif %}
+
+<section class="condizioni">
+  <h2>Condizioni</h2>
+  {% if condizioni %}
+  <div class="colonne">
+    <ul>{% for v in condizioni %}<li>{{ v }}</li>{% endfor %}</ul>
+    <div>
+      {% if supplementi %}
+      <h4>Supplementi</h4>
+      <table class="supplementi">
+        {% for s in supplementi %}<tr><td>{{ s.voce }}</td><td class="importo">{{ s.prezzo }}</td></tr>{% endfor %}
+      </table>
+      {% endif %}
+      <p class="info-riga"><strong>Validità del preventivo:</strong> {{ comune.validita_preventivo }}</p>
+      <p class="info-riga"><strong>Per la conferma:</strong> {{ c.orari_conferma }}</p>
+    </div>
+  </div>
+  {% else %}
+  <div class="condizioni-compatte">
+    {% for s in supplementi %}<p><strong>{{ s.voce }}:</strong> {{ s.prezzo }}</p>{% endfor %}
+    <p><strong>Validità del preventivo:</strong> {{ comune.validita_preventivo }}</p>
+    <p><strong>Per la conferma:</strong> {{ c.orari_conferma }}</p>
+  </div>
+  {% endif %}
+</section>
+
+<section class="preventivo">
+  <h2>Preventivo</h2>
+  <p class="date-preventivo">
+    del <span class="riempi">{{ p.data_preventivo }}</span>
+    · valido fino al <span class="riempi">{{ p.scadenza }}</span>
+  </p>
+  <div class="campi">
+    <div class="campo largo"><span class="etichetta">{{ "Sposi" if menu.linea == "matrimonio" else "Intestatario" }}</span><span class="valore">{{ p.cliente }}</span></div>
+    <div class="campo"><span class="etichetta">Data evento</span><span class="valore">{{ p.data_evento }}</span></div>
+    <div class="campo"><span class="etichetta">Ospiti adulti · bambini</span><span class="valore">{{ p.ospiti }}</span></div>
+    <div class="campo"><span class="etichetta">Sala</span><span class="valore">{{ p.sala }}</span></div>
+    <div class="campo largo"><span class="etichetta">Note</span><span class="valore">{{ p.note }}</span></div>
+    <div class="campo"><span class="etichetta">Per accettazione</span><span class="valore"></span></div>
+  </div>
+</section>
+
+</body>
+</html>

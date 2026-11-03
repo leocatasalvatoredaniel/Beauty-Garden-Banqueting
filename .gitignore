@@ -1,0 +1,5 @@
+# Preventivi precompilati: contengono dati dei clienti, non vanno pubblicati
+preventivi/
+# File di controllo generati con --html
+pdf/*.html
+__pycache__/

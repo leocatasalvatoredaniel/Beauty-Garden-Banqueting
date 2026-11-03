@@ -1,0 +1,73 @@
+# ─────────────────────────────────────────────────────────────────────
+#  DATI COMUNI A TUTTI I MENÙ
+#  Ciò che è scritto qui compare in ogni PDF che lo richiama.
+#  Se una condizione cambia, si modifica SOLO qui.
+# ─────────────────────────────────────────────────────────────────────
+
+listino: "Listino 2026"
+
+contatti:
+  telefono: "095 688802"
+  sito: "www.beautygarden.it"
+  email: "beautygardenbanqueting@gmail.com"
+  email_info: "info@beautygarden.it"
+  luogo: "Biancavilla"
+  orari_conferma: "Da martedì a domenica, 10:00–12:00 e 16:30–19:00 · Lunedì chiuso"
+
+# Testo introduttivo breve (una o due frasi al massimo).
+intro:
+  matrimonio: >-
+    Da oltre 30 anni la Famiglia Leocata si occupa di ristorazione e banchettistica
+    di qualità. Spazi esterni con 11 attrazioni d'acqua, cucina curata
+    e un servizio attento a ogni dettaglio del vostro matrimonio.
+  banchetti: >-
+    Da oltre 30 anni la Famiglia Leocata si occupa di cerimonie ed eventi.
+    Grandi spazi esterni con 11 attrazioni d'acqua e una cucina attenta
+    a intolleranze e allergie, con spazi dedicati e autorizzati.
+
+# Nota sostituzioni piatti (compare sotto primi e secondi).
+nota_sostituzioni: >-
+  In fase di definizione del menù è possibile concordare piatti alternativi.
+
+# ─── FORMULA TUTTO INCLUSO (matrimoni) ───────────────────────────────
+# Elenco base. Ogni menù può aggiungere voci con "incluso_extra".
+incluso_matrimonio:
+  - "Consulenza dell'Event Creative Manager Alessandro Leocata"
+  - "Menù per celiaci e intolleranze, preparati in cucina dedicata con la supervisione di Claudio Leocata"
+  - "Attenzione dedicata ai genitori degli sposi"
+  - "Servizio di accoglienza ospiti, anche nel parcheggio"
+  - "Sommelier"
+  - "Tovagliato pregiato"
+  - "Centrotavola a scelta fra vari modelli"
+  - "Stampa menù personalizzati, schema tavoli e segnafamiglia"
+  - "Arredo della villa e degli esterni con pouf e divanetti, zone relax"
+  - "Parco giochi per bambini"
+  - "Parcheggio non custodito"
+
+# ─── CONDIZIONI ──────────────────────────────────────────────────────
+# ATTENZIONE: nei PDF originali queste condizioni NON erano uguali in
+# tutti i menù (es. Sala Ducale / Sala Regina, minimo 80 / 60 persone).
+# Qui è riportata la versione del menù Carne Special, che coincide con
+# la maggioranza dei menù. Va confermata prima di estenderla a tutti.
+condizioni_matrimonio:
+  - "Prezzo a persona. Il numero degli invitati si intende bambini esclusi."
+  - "Numero minimo 100 persone: per prenotazioni inferiori il menù può subire variazioni."
+  - "Se il numero degli invitati diminuisce in modo considerevole, la scontistica verrà ricalcolata."
+  - "Sala riservata: minimo 80 persone. Esclusiva Sala Luxury: minimo 120 persone."
+  - "Rito civile: € 500."
+
+supplementi_matrimonio:
+  - voce: "Sala Esterna Romantica o Bordo Piscina (minimo 100 persone)"
+    prezzo: "+ € 10 a persona"
+  - voce: "Sala Ducale"
+    prezzo: "+ € 5 a persona"
+
+# Nei menù banchetti originali non ci sono altre condizioni oltre a supplementi,
+# validità e orari: per questo la lista è vuota.
+condizioni_banchetti: []
+
+supplementi_banchetti:
+  - voce: "Sala Romantica o Bordo Piscina"
+    prezzo: "+ € 10 a persona"
+
+validita_preventivo: "3 mesi"
