@@ -35,8 +35,27 @@ USCITA_MENU = RADICE / "pdf"
 USCITA_PREVENTIVI = RADICE / "preventivi"
 
 ETICHETTE_LINEA = {"matrimonio": "Matrimonio", "banchetti": "Banchetti"}
-PAGINE_MASSIME = {"matrimonio": 2, "banchetti": 1}
-LAYOUT_VALIDI = {"linea", "isole", "piatti", "elenco"}
+PAGINE_MASSIME = {"matrimonio": 3, "banchetti": 2}
+RIGHE_LIBERE = {"matrimonio": 4, "banchetti": 6}   # righe per "Altre modifiche e richieste"
+LAYOUT_VALIDI = {"semplice", "isole", "piatti", "elenco"}
+VELISTA = MODELLO / "font" / "privati" / "VELISTA.ttf"
+
+
+def prepara_velista() -> None:
+    """Velista è un font commerciale: non va pubblicato su GitHub.
+    Lo script lo cerca in modello/font/privati/ oppure lo estrae da velista.zip."""
+    if VELISTA.exists():
+        return
+    archivio = RADICE / "velista.zip"
+    if archivio.exists():
+        import zipfile
+        with zipfile.ZipFile(archivio) as z:
+            nome = next((n for n in z.namelist() if n.lower().endswith("velista.ttf")), None)
+            if nome:
+                VELISTA.parent.mkdir(parents=True, exist_ok=True)
+                VELISTA.write_bytes(z.read(nome))
+                return
+    sys.exit("Manca il font Velista: copia VELISTA.ttf in modello/font/privati/ (cartella esclusa da git).")
 
 
 def trova_chrome() -> str:
@@ -76,6 +95,8 @@ def controlla_menu(slug: str, menu: dict) -> list[str]:
     for i, s in enumerate(menu.get("sezioni") or [], 1):
         if s.get("layout") not in LAYOUT_VALIDI:
             errori.append(f"sezione {i} ('{s.get('titolo')}'): layout '{s.get('layout')}' non valido")
+        if "righe_note" in s and not isinstance(s["righe_note"], int):
+            errori.append(f"sezione {i} ('{s.get('titolo')}'): righe_note deve essere un numero intero")
         if not s.get("voci") and not s.get("evidenza"):
             errori.append(f"sezione {i} ('{s.get('titolo')}'): nessuna voce")
     return [f"{slug}: {e}" for e in errori]
@@ -89,18 +110,16 @@ def aggiungi_mesi(data: dt.date, mesi: int) -> dt.date:
 
 
 def dati_preventivo(args, comune: dict) -> dict:
-    vuoto = {k: "" for k in ("cliente", "data_evento", "ospiti", "sala", "data_preventivo", "scadenza", "note")}
+    vuoto = {k: "" for k in ("cliente", "data_evento", "adulti", "bambini", "sala", "data_preventivo", "scadenza", "note")}
     if not args.cliente:
         return vuoto
     oggi = dt.date.today()
     mesi = int(re.match(r"\d+", comune["validita_preventivo"]).group())
-    ospiti = ""
-    if args.adulti is not None:
-        ospiti = f"{args.adulti} · {args.bambini if args.bambini is not None else 0}"
     return {
         "cliente": args.cliente,
         "data_evento": args.data_evento or "",
-        "ospiti": ospiti,
+        "adulti": "" if args.adulti is None else args.adulti,
+        "bambini": "" if args.bambini is None else args.bambini,
         "sala": args.sala or "",
         "data_preventivo": oggi.strftime("%d/%m/%Y"),
         "scadenza": aggiungi_mesi(oggi, mesi).strftime("%d/%m/%Y"),
@@ -165,6 +184,7 @@ def main() -> None:
 
     env = Environment(loader=FileSystemLoader(MODELLO), autoescape=True)
     modello = env.get_template("menu.html.j2")
+    prepara_velista()
     chrome = trova_chrome()
     preventivo = dati_preventivo(args, comune)
 
@@ -181,7 +201,8 @@ def main() -> None:
             incluso=(comune.get(f"incluso_{linea}") or []) + (menu.get("incluso_extra") or []),
             condizioni=(comune.get(f"condizioni_{linea}") or []) + (menu.get("condizioni_extra") or []),
             supplementi=comune.get(f"supplementi_{linea}") or [],
-            email_piede=c["email"] if linea == "matrimonio" else f"{c['email_info']}  ·  {c['email']}",
+            email_piede=c["email"] if linea == "matrimonio" else f"{c['email_info']}\\2003 {c['email']}",
+            righe_libere=RIGHE_LIBERE[linea],
             p=preventivo,
         )
         nome_file = f"{ETICHETTE_LINEA[linea]} - {menu['nome']}.pdf"

@@ -3,3 +3,5 @@ preventivi/
 # File di controllo generati con --html
 pdf/*.html
 __pycache__/
+# Font commerciale Velista (licenza Toni Studio): solo in locale, mai su GitHub
+modello/font/privati/

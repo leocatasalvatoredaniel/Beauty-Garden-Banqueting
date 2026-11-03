@@ -8,11 +8,11 @@ listino: "Listino 2026"
 
 contatti:
   telefono: "095 688802"
-  sito: "www.beautygarden.it"
+  sito: "beautygarden.it"
   email: "beautygardenbanqueting@gmail.com"
   email_info: "info@beautygarden.it"
   luogo: "Biancavilla"
-  orari_conferma: "Da martedì a domenica, 10:00–12:00 e 16:30–19:00 · Lunedì chiuso"
+  orari_conferma: "da martedì a domenica, 10:00–12:00 e 16:30–19:00; lunedì chiuso"
 
 # Testo introduttivo breve (una o due frasi al massimo).
 intro:

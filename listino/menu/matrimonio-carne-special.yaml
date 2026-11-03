@@ -5,7 +5,7 @@ prezzo: 110
 
 sezioni:
   - titolo: "Benvenuto"
-    layout: linea
+    layout: semplice
     voci:
       - "Cocktail alcolico e analcolico"
       - "Granitine e brioche tipica siciliana"
@@ -41,13 +41,16 @@ sezioni:
         desc: "Vini rossi e bianchi, fermi e frizzanti, bollicine e spumanti Brut o Extra Dry delle migliori cantine siciliane e nazionali"
 
   - titolo: "Primi piatti"
+    pagina_nuova: true
     layout: piatti
+    righe_note: 5
     voci:
       - "Risotto con porcini di montagna e nocciole dell'Alcantara"
       - "Panciotti in crema di pistacchio, pesto e ciliegino"
 
   - titolo: "Secondi piatti"
     layout: piatti
+    righe_note: 6
     voci:
       - "Delicato arrosto di vitello alla moda dello Chef"
       - "Saporito involtino al pistacchio"
@@ -55,7 +58,6 @@ sezioni:
     nota_sostituzioni: true
 
   - titolo: "Dolci, torta e frutta"
-    pagina_nuova: true
     nota: "Gran buffet nelle aree esterne, con preparazioni dal vivo, tavoli e posti a sedere"
     layout: elenco
     evidenza: "Torta nuziale a piani, a scelta fra numerosi modelli. Su richiesta, torta monumentale in pasta di zucchero realizzata dalla nostra Campionessa Italiana di Cake Design."
@@ -75,7 +77,7 @@ sezioni:
       - "Degustazione con Sommelier: spumanti dolci e brut, passito e moscato"
 
   - titolo: "Al bar"
-    layout: linea
+    layout: semplice
     voci:
       - "Caffè di pregiate torrefazioni"
       - "Amari delle migliori etichette"

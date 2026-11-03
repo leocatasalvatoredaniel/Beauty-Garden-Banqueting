@@ -5,7 +5,7 @@ prezzo: 93
 
 sezioni:
   - titolo: "Benvenuto"
-    layout: linea
+    layout: semplice
     voci:
       - "Cocktail di benvenuto"
       - "Aperitivi e rusticherie"
@@ -13,7 +13,6 @@ sezioni:
 
   - titolo: "Buffet di antipasti"
     layout: isole
-    colonne: 3
     voci:
       - nome: "Angolo del Salumiere"
         desc: "I migliori prosciutti cotti e crudi e salumi stagionati, tagliati a mano"
@@ -46,7 +45,6 @@ sezioni:
 
   - titolo: "Buffet di dolci"
     layout: elenco
-    colonne: 3
     evidenza: "La torta da personalizzare"
     voci:
       - "Crêpes alla Nutella Ferrero dal vivo"
@@ -57,7 +55,7 @@ sezioni:
       - "Zucchero filato"
 
   - titolo: "Bevande"
-    layout: linea
+    layout: semplice
     voci:
       - "Spumante"
       - "Acqua minerale e bevande"

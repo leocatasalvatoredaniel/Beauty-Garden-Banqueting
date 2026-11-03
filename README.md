@@ -1,6 +1,9 @@
 # Menù Beauty Garden Banqueting — preventivi
 
-Menù per i preventivi, rifatti da capo in stile minimal secondo il **Manuale del marchio**.
+Menù per i preventivi, rifatti da capo in stile minimal secondo il Manuale del marchio,
+con gli stessi font dei menù da tavola (Velista e Fraunces).
+Sono pensati per essere **stampati e compilati a penna durante il preventivo**.
+
 Il contenuto (piatti, prezzi, condizioni) è separato dalla grafica: si modifica il testo
 e i PDF si rigenerano tutti con la stessa impaginazione.
 
@@ -8,13 +11,24 @@ e i PDF si rigenerano tutti con la stessa impaginazione.
 > `Matrimonio - Carne Special` e `Banchetti - Buffet Carne Executive`.
 > Gli altri si aggiungono allo stesso modo dopo l'approvazione.
 
+## Come è fatto un menù
+
+- **Pagine del menù**: a sinistra le portate, a destra una **colonna di righe per le modifiche
+  a penna**, allineata a ogni portata. Le portate che si cambiano più spesso (primi e
+  secondi) hanno più righe.
+- **Ultima pagina, riepilogo del preventivo**: cosa è incluso, condizioni, supplementi con
+  casella da spuntare, e i campi da compilare: sposi o intestatario, data dell'evento,
+  adulti, bambini, sala, prezzo del menù (già stampato), supplementi a persona, prezzo
+  concordato a persona, totale, data e scadenza del preventivo, altre modifiche, firma.
+- Matrimonio: 3 pagine. Banchetti: 2 pagine.
+
 ## Cosa c'è
 
 | Cartella / file | Contenuto |
 |---|---|
-| `pdf/` | **I menù pronti da inviare** (generati, non modificarli a mano) |
-| `listino/comune.yaml` | Testi comuni: contatti, intro, Formula Tutto Incluso, condizioni, supplementi, validità |
-| `listino/menu/*.yaml` | Un file per menù: nome, prezzo, piatti |
+| `pdf/` | **I menù pronti da stampare** (generati, non modificarli a mano) |
+| `listino/comune.yaml` | Testi comuni: contatti, intro, incluso, condizioni, supplementi, validità |
+| `listino/menu/*.yaml` | Un file per menù: nome, prezzo, portate |
 | `modello/` | Grafica: stile, logo vettoriale, font |
 | `genera.py` | Script che crea i PDF |
 | `*.pdf` nella cartella principale | Menù originali 2026 (CorelDRAW), lasciati come riferimento |
@@ -35,21 +49,22 @@ nome: "Carne Special"
 prezzo: 110
 sezioni:
   - titolo: "Benvenuto"
-    layout: linea          # voci su una riga, separate da ·
+    layout: semplice       # voci brevi, una per riga
     voci: ["Cocktail alcolico e analcolico", "Rustici vari"]
   - titolo: "Antipasti"
-    layout: isole          # nome + descrizione, su 2 colonne (colonne: 3 per voci brevi)
+    layout: isole          # nome + descrizione, su 2 colonne
     voci:
       - nome: "Isola della Brace"
         desc: "Carni pregiate cotte al momento"
   - titolo: "Primi piatti"
-    layout: piatti         # piatti serviti, centrati
+    pagina_nuova: true     # inizia una nuova pagina
+    layout: piatti         # piatti serviti
+    righe_note: 5          # righe per le modifiche a penna (minimo 3 se non indicato)
     voci: ["Risotto ..."]
     contorno: "..."        # facoltativo
     nota_sostituzioni: true
   - titolo: "Dolci"
-    pagina_nuova: true     # inizia una nuova pagina
-    layout: elenco         # elenco puntato su 2 colonne
+    layout: elenco         # elenco su 2 colonne
     evidenza: "Torta nuziale ..."
     voci: ["Cannoli assortiti", "..."]
 ```
@@ -65,7 +80,7 @@ python genera.py
 ```
 
 Lo script controlla gli errori più comuni (prezzo non numerico, sezioni vuote, nomi
-duplicati) e avvisa se un menù supera le pagine previste (matrimonio 2, banchetti 1).
+duplicati) e avvisa se un menù supera le pagine previste.
 
 ### Preventivo precompilato
 
@@ -73,19 +88,25 @@ duplicati) e avvisa se un menù supera le pagine previste (matrimonio 2, banchet
 python genera.py matrimonio-carne-special --cliente "Nome e Cognome" --data-evento 12/06/2027 --adulti 120 --bambini 8 --sala "Sala Luxury" --note "..."
 ```
 
-Il PDF finisce in `preventivi/`, con data del preventivo e scadenza (data + validità)
-calcolate in automatico. La cartella `preventivi/` **non viene pubblicata su GitHub**
-perché contiene dati dei clienti.
+Il PDF finisce in `preventivi/`, con data del preventivo e scadenza calcolate in automatico.
+Prezzo concordato, supplementi e totale restano da scrivere a penna.
+La cartella `preventivi/` **non viene pubblicata su GitHub** perché contiene dati dei clienti.
 
-## Scelte grafiche
+## Font
 
-- **Colori** presi dai campioni del manuale: verde `#2B392A`, oro `#C79A4E`, crema `#EDE5D4`,
-  nero `#201F1B`. Attenzione: i codici scritti nel manuale non corrispondono ai campioni
-  (es. "#3d2a65e" non è un colore valido, e crema e nero sono etichettati entrambi "#292820").
-- **Logo**: estratto in vettoriale dal manuale (`modello/logo/`), in oro, verde, nero e bianco.
-- **Font**: il font del marchio (Velista) non è disponibile come file. Sono usati
-  Cormorant Garamond (titoli e piatti) e Jost (testi), entrambi a licenza libera OFL.
-  Se il grafico fornisce Velista con licenza per la stampa, si può sostituire in `modello/stile.css`.
+- **Velista** (Toni Studio, licenza commerciale): titoli, nomi delle portate e prezzo.
+  È solo maiuscolo e non ha il simbolo €, per questo i prezzi sono scritti "110 euro a persona".
+  **Non va pubblicato su GitHub**: lo script lo cerca in `modello/font/privati/VELISTA.ttf`
+  (cartella esclusa da git) oppure lo estrae da `velista.zip`.
+- **Fraunces** (licenza libera OFL): tutto il resto. In `modello/font/` ci sono versioni
+  statiche ricavate dal file variabile alla misura ottica per il testo (10pt).
+
+## Colori e logo
+
+- Colori presi dai campioni del manuale: verde `#2B392A`, oro `#C79A4E`, crema `#EDE5D4`,
+  nero `#201F1B`. I codici scritti nel manuale non corrispondono ai campioni
+  (es. "#3d2a65e" non è un colore valido; crema e nero sono etichettati entrambi "#292820").
+- Logo estratto in vettoriale dal manuale (`modello/logo/`), in oro, verde, nero e bianco.
 
 ## Da decidere prima di estendere a tutti i menù
 
