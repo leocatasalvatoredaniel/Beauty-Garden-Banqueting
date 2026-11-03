@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<base href="{{ base }}">
+<title>{{ etichetta_linea }} {{ menu.nome }}</title>
+<link rel="stylesheet" href="stile.css">
+<style>
+  @page {
+    @bottom-left {
+      content: "Beauty Garden Banqueting, {{ c.luogo }}\2003 {{ c.telefono }}\2003 {{ c.sito }}\2003 {{ email_piede }}";
+      font-family: "Fraunces", serif; font-size: 7pt; color: #66625A; width: 158mm;
+    }
+    @bottom-right {
+      width: 22mm; text-align: right;
+      content: "pagina " counter(page) " di " counter(pages);
+      font-family: "Fraunces", serif; font-style: italic; font-size: 7pt; color: #66625A;
+    }
+  }
+</style>
+</head>
+<body class="linea-{{ menu.linea }}">
+
+<header class="testata">
+  <img class="logo" src="logo/beauty-garden-oro.svg" alt="Beauty Garden Banqueting">
+  <div class="titolo-prezzo">
+    <h1>{{ menu.nome }}</h1>
+    <p class="prezzo"><span class="cifra">{{ menu.prezzo }}</span><span class="unita">euro a persona</span></p>
+  </div>
+  <p class="sottotitolo">Menù {{ etichetta_linea|lower }}, {{ comune.listino|lower }}</p>
+  {% if intro %}<p class="intro">{{ intro }}</p>{% endif %}
+</header>
+
+{# ── Portate: contenuto a sinistra, righe per le modifiche a destra ── #}
+{% for s in menu.sezioni %}
+{% if s.pagina_nuova %}
+<div class="testata-pagina">
+  <span class="nome">{{ menu.nome }}</span>
+  <span class="dettaglio">{{ menu.prezzo }} euro a persona</span>
+</div>
+{% endif %}
+<section class="portata riga-griglia layout-{{ s.layout }}{% if loop.first or s.pagina_nuova %} prima{% endif %}">
+  <div class="contenuto">
+    <h2>{{ s.titolo }}</h2>
+    {% if s.nota %}<p class="nota-portata">{{ s.nota }}</p>{% endif %}
+
+    {% if s.layout == "semplice" %}
+      <ul>{% for v in s.voci %}<li>{{ v }}</li>{% endfor %}</ul>
+
+    {% elif s.layout == "isole" %}
+      <div class="voci">
+      {% for v in s.voci %}<div class="isola"><h3>{{ v.nome }}</h3>{% if v.desc %}<p>{{ v.desc }}</p>{% endif %}</div>{% endfor %}
+      </div>
+
+    {% elif s.layout == "piatti" %}
+      {% for v in s.voci %}<p class="piatto">{{ v }}</p>{% endfor %}
+      {% if s.contorno %}<p class="contorno">{{ s.contorno }}</p>{% endif %}
+      {% if s.nota_sostituzioni %}<p class="nota-sostituzioni">{{ comune.nota_sostituzioni }}</p>{% endif %}
+
+    {% elif s.layout == "elenco" %}
+      {% if s.evidenza %}<p class="evidenza">{{ s.evidenza }}</p>{% endif %}
+      <ul>{% for v in s.voci %}<li>{{ v }}</li>{% endfor %}</ul>
+    {% endif %}
+  </div>
+  <div class="note"{% if s.righe_note %} style="min-height: calc(var(--riga) * {{ s.righe_note }} + 2mm)"{% endif %}><div class="righe">{% for i in range(36) %}<i></i>{% endfor %}</div></div>
+</section>
+{% endfor %}
+
+{# ── Condizioni, supplementi ed extra ── #}
+<div class="testata-pagina">
+  <span class="nome">{{ menu.nome }}</span>
+  <span class="dettaglio">{{ "Condizioni ed extra" if r.pagina_separata else "Riepilogo del preventivo" }}</span>
+</div>
+
+{% if incluso %}
+<section class="blocco">
+  <h2>Incluso nel prezzo</h2>
+  <ul class="elenco-due-colonne">{% for v in incluso %}<li>{{ v }}</li>{% endfor %}</ul>
+</section>
+{% endif %}
+
+<section class="blocco">
+  <h2>Condizioni e supplementi</h2>
+  <div class="condizioni">
+    <div>
+      {% if condizioni %}<ul>{% for v in condizioni %}<li>{{ v }}</li>{% endfor %}</ul>{% endif %}
+      <div class="validita">
+        <p>Il preventivo è valido {{ comune.validita_preventivo }}.</p>
+        <p>Per la conferma: {{ c.orari_conferma }}.</p>
+      </div>
+    </div>
+    <table class="tabella supplementi">
+      {% for s in supplementi %}
+      <tr><td class="spunta"><span class="casella"></span></td><td>{{ s.voce }}</td><td class="importo">{{ s.prezzo }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+
+<section class="blocco">
+  <h2>Extra e aggiunte</h2>
+  <table class="tabella extra">
+    <tr><th>Voce</th><th class="importo">Prezzo</th></tr>
+    {% for i in range(r.righe_extra) %}<tr><td></td><td class="importo"></td></tr>{% endfor %}
+  </table>
+</section>
+
+{# ── Preventivo da compilare a mano ── #}
+{% if r.pagina_separata %}
+<div class="testata-pagina">
+  <span class="nome">{{ menu.nome }}</span>
+  <span class="dettaglio">Preventivo</span>
+</div>
+{% endif %}
+
+<section class="blocco">
+  <h2>Dati dell'evento</h2>
+  <div class="campi">
+    <div class="campo largo"><span class="etichetta">{{ "Sposi" if menu.linea == "matrimonio" else "Intestatario" }}</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Telefono</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Email</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Data dell'evento</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Pranzo o cena</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Ospiti adulti</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Bambini</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Sala</span><span class="valore"></span></div>
+    <div class="campo intero"><span class="etichetta">Intolleranze e allergie</span><div class="righe-libere">{% for i in range(2) %}<i></i>{% endfor %}</div></div>
+  </div>
+</section>
+
+<section class="blocco">
+  <h2>Prezzo</h2>
+  <div class="campi">
+    <div class="campo"><span class="etichetta">Prezzo del menù</span><span class="valore stampato">{{ menu.prezzo }} euro a persona</span></div>
+    <div class="campo"><span class="etichetta">Supplementi a persona</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Extra a persona</span><span class="valore"></span></div>
+    <div class="campo"><span class="etichetta">Sconto</span><span class="valore"></span></div>
+    <div class="campo forte"><span class="etichetta">Prezzo concordato a persona</span><span class="valore"></span></div>
+    <div class="campo forte"><span class="etichetta">Totale</span><span class="valore"></span></div>
+  </div>
+</section>
+
+<section class="blocco">
+  <h2>Note</h2>
+  <div class="righe-libere">{% for i in range(r.righe_note) %}<i></i>{% endfor %}</div>
+</section>
+
+<section class="blocco campi">
+  <div class="campo"><span class="etichetta">Data del preventivo</span><span class="valore"></span></div>
+  <div class="campo"><span class="etichetta">Valido fino al</span><span class="valore"></span></div>
+  <div class="campo"><span class="etichetta">Firma per accettazione</span><span class="valore"></span></div>
+</section>
+
+</body>
+</html>

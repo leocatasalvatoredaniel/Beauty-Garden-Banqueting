@@ -1,0 +1,84 @@
+# Fonte: "100 CARNE SPECIAL 2026.pdf" (prezzo stampato € 110)
+linea: matrimonio
+nome: "Carne Special"
+prezzo: 110
+
+sezioni:
+  - titolo: "Benvenuto"
+    layout: semplice
+    voci:
+      - "Cocktail alcolico e analcolico"
+      - "Granitine e brioche tipica siciliana"
+      - "Rustici vari"
+
+  - titolo: "Antipasti"
+    nota: "Gran buffet in showcooking e cucina a vista nelle aree esterne, con personale di servizio, tavoli e posti a sedere"
+    layout: isole
+    voci:
+      - nome: "Isola Thai"
+        desc: "Spaghetti di riso in agrodolce secondo le antiche ricette thailandesi"
+      - nome: "Isola della Brace"
+        desc: "Carni pregiate cotte al momento, verdure in decorazione"
+      - nome: "Filetto di carni selezionate"
+        desc: "Tagliato a vista, con la sua salsa alle spezie e aromi"
+      - nome: "Carpacci di carne"
+        desc: "Aromatizzati agli agrumi, alla moda dello Chef secondo la tradizione siciliana"
+      - nome: "Il Casaro"
+        desc: "Formaggi dolci e piccanti dell'Etna e dei Nebrodi, trecce di mozzarella, tomini, riduzioni e marmellatine della nostra cucina"
+      - nome: "Il Salumiere"
+        desc: "Prosciutti cotti e crudi e salumi speziati, tagliati a vista con affettatrice manuale Berkel"
+      - nome: "Isola della Fritturina"
+        desc: "Arancinetti, verdurine pastellate, polpettine di verdure, crispelline e street food fritto al momento"
+      - nome: "Piadina in bella vista"
+        desc: "Cotta al momento, in accompagnamento alle carni"
+      - nome: "Torte salate"
+        desc: "Selezione e assortimento"
+      - nome: "Finger food di stagione"
+      - nome: "Conserve della tradizione siciliana"
+      - nome: "Il Fornaio"
+        desc: "Grissini e pane di varie tipologie"
+      - nome: "Degustazione con Sommelier"
+        desc: "Vini rossi e bianchi, fermi e frizzanti, bollicine e spumanti Brut o Extra Dry delle migliori cantine siciliane e nazionali"
+
+  - titolo: "Primi piatti"
+    pagina_nuova: true
+    layout: piatti
+    righe_note: 5
+    voci:
+      - "Risotto con porcini di montagna e nocciole dell'Alcantara"
+      - "Panciotti in crema di pistacchio, pesto e ciliegino"
+
+  - titolo: "Secondi piatti"
+    layout: piatti
+    righe_note: 6
+    voci:
+      - "Delicato arrosto di vitello alla moda dello Chef"
+      - "Saporito involtino al pistacchio"
+    contorno: "Purea di patate con ciliegino confit su letto di misticanza"
+    nota_sostituzioni: true
+
+  - titolo: "Dolci, torta e frutta"
+    nota: "Gran buffet nelle aree esterne, con preparazioni dal vivo, tavoli e posti a sedere"
+    layout: elenco
+    evidenza: "Torta nuziale a piani, a scelta fra numerosi modelli. Su richiesta, torta monumentale in pasta di zucchero realizzata dalla nostra Campionessa Italiana di Cake Design."
+    voci:
+      - "Cannoli assortiti, in chiave classica e contemporanea"
+      - "Torte assortite classiche e moderne"
+      - "Crêpes calde preparate al momento con Nutella Ferrero"
+      - "Gelato artigianale nel carrettino dei gelati"
+      - "Babà gourmet spadellato dal vivo"
+      - "Isola della frutta di stagione"
+      - "Composizione di semifreddi"
+      - "Pasticceria mignon moderna"
+      - "Zeppole di riso al miele"
+      - "Iris in gusti assortiti"
+      - "Zucchero filato"
+      - "Confettata in vari gusti e marshmallow"
+      - "Degustazione con Sommelier: spumanti dolci e brut, passito e moscato"
+
+  - titolo: "Al bar"
+    layout: semplice
+    voci:
+      - "Caffè di pregiate torrefazioni"
+      - "Amari delle migliori etichette"
+      - "Acque minerali e bevande comprese"
